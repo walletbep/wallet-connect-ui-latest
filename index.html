@@ -2,24 +2,31 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>WalletConnect v2 Multichain</title>
+  <title>Premium Multichain Wallet dApp</title>
+
   <link rel="stylesheet" href="style.css" />
+
+  <!-- WalletConnect v2 SignClient (NO IMPORT) -->
+  <script src="https://unpkg.com/@walletconnect/sign-client/dist/umd/index.min.js"></script>
+
+  <!-- Ethers.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.8.1/ethers.umd.min.js"></script>
 </head>
+
 <body>
+  <div class="main-container">
+    <h1 class="title">Premium Multichain Wallet dApp</h1>
 
-<div class="container">
-  <h2>WalletConnect v2 – Multichain</h2>
+    <button id="connectBtn" class="connect-btn">Connect Wallet</button>
 
-  <button id="connectBtn">Connect Wallet</button>
-
-  <div id="walletInfo" style="display:none; margin-top:20px;">
-    <p><strong>Address:</strong> <span id="addr"></span></p>
-    <p><strong>Chain:</strong> <span id="chain"></span></p>
+    <div id="dashboard" class="dashboard" style="display:none;">
+      <h2>Wallet Dashboard</h2>
+      <p><strong>Address:</strong> <span id="addr"></span></p>
+      <p><strong>Chain:</strong> <span id="chain"></span></p>
+      <p><strong>Native Balance:</strong> <span id="bal"></span></p>
+    </div>
   </div>
-</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.8.1/ethers.umd.min.js"></script>
-
-<script src="app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

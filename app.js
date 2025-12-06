@@ -1,15 +1,15 @@
 
-// WalletConnect v2 Controller Client
-import("https://cdn.jsdelivr.net/npm/@walletconnect/sign-client/dist/umd/index.min.js").then(async (pkg) => {
+// WalletConnect v2 Global Client from CDN
+const SignClient = window.WalletConnectSignClient;
 
-  const SignClient = pkg.default;
+async function init() {
 
   const client = await SignClient.init({
-    projectId: "a50f4d7d1e8bd4111c564ffd0e123456", // demo project id (replace in production)
+    projectId: "a50f4d7d1e8bd4111c564ffd0e123456",
     relayUrl: "wss://relay.walletconnect.com",
     metadata: {
-      name: "My Dapp",
-      description: "WC v2 Multichain Demo",
+      name: "Full dApp",
+      description: "WalletConnect v2 Multichain dApp",
       url: "https://example.com",
       icons: ["https://walletconnect.com/walletconnect-logo.png"]
     }
@@ -20,25 +20,40 @@ import("https://cdn.jsdelivr.net/npm/@walletconnect/sign-client/dist/umd/index.m
     const { uri, approval } = await client.connect({
       requiredNamespaces: {
         eip155: {
-          methods: ["eth_sendTransaction", "personal_sign", "eth_signTypedData"],
-          chains: ["eip155:1", "eip155:56", "eip155:137"], // Ethereum, BNB, Polygon
+          methods: ["eth_sendTransaction", "personal_sign"],
+          chains: ["eip155:1", "eip155:56", "eip155:137"],
           events: ["chainChanged", "accountsChanged"]
         }
-      },
+      }
     });
 
     if (uri) {
-      // Open QR modal
-      window.open(`https://explorer.walletconnect.com/?type=wc&uri=${encodeURIComponent(uri)}`, "_blank");
+      window.open(
+        `https://explorer.walletconnect.com/?type=wc&uri=${encodeURIComponent(uri)}`,
+        "_blank"
+      );
     }
 
     const session = await approval();
 
-    const address = session.namespaces.eip155.accounts[0].split(":")[2];
-    const chain = session.namespaces.eip155.accounts[0].split(":")[1];
+    const acc = session.namespaces.eip155.accounts[0];
+    const [ , chainId, address ] = acc.split(":");
 
+    document.getElementById("dashboard").style.display = "block";
     document.getElementById("addr").innerText = address;
-    document.getElementById("chain").innerText = chain;
-    document.getElementById("walletInfo").style.display = "block";
+    document.getElementById("chain").innerText = chainId;
+
+    const rpcMap = {
+      "1": "https://rpc.ankr.com/eth",
+      "56": "https://bsc-dataseed.binance.org/",
+      "137": "https://polygon-rpc.com/"
+    };
+
+    const provider = new ethers.JsonRpcProvider(rpcMap[chainId]);
+    const balWei = await provider.getBalance(address);
+    const bal = ethers.formatEther(balWei);
+    document.getElementById("bal").innerText = bal;
   };
-});
+}
+
+init();
