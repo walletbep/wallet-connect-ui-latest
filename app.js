@@ -1,5 +1,5 @@
 
-// WalletConnect v2 Global Client from CDN
+// WalletConnect v2 Global Client from CDN UMD
 const SignClient = window.WalletConnectSignClient;
 
 async function init() {
